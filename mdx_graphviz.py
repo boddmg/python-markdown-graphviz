@@ -55,7 +55,7 @@ import markdown, re, markdown.preprocessors, subprocess
 
 class GraphvizExtension(markdown.Extension):
     def __init__(self, configs):
-        self.config = {'FORMAT':'png', 'BINARY_PATH':"", 'WRITE_IMGS_DIR':"", "BASE_IMG_LINK_DIR":""}
+        self.config = {'FORMAT':'png', "PREFIX":"", 'BINARY_PATH':"", 'WRITE_IMGS_DIR':"", "BASE_IMG_LINK_DIR":""}
         for key, value in configs:
             self.config[key] = value
     
@@ -114,11 +114,11 @@ class GraphvizPreprocessor(markdown.preprocessors.Preprocessor):
         p.stdin.write("\n".join(lines))
         p.stdin.close()
         p.wait()
-        filepath = "%s%s.%s" % (self.graphviz.config["WRITE_IMGS_DIR"], n, self.graphviz.config["FORMAT"])
+        filepath = "%s%s%s.%s" % (self.graphviz.config["WRITE_IMGS_DIR"],self.graphviz.config["PREFIX"], n, self.graphviz.config["FORMAT"])
         fout = open(filepath, 'w')
         fout.write(p.stdout.read())
         fout.close()
-        output_path = "%s%s.%s" % (self.graphviz.config["BASE_IMG_LINK_DIR"], n, self.graphviz.config["FORMAT"])
+        output_path = "%s%s%s.%s" % (self.graphviz.config["BASE_IMG_LINK_DIR"],self.graphviz.config["PREFIX"], n, self.graphviz.config["FORMAT"])
         return "![Graphviz chart %s](%s)" % (n, output_path)
 
 def makeExtension(configs=None) :
